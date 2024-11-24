@@ -1,0 +1,19 @@
+?- student_average_and_pass(1, Average, Passed).
+Average = 4.0, Passed = true.
+
+?- student_average_and_pass(3, Average, Passed).
+Average = 3.0, Passed = true.
+
+% failing_students_per_subject/2
+?- failing_students_per_subject('Математика', Count).
+Count = 0.
+
+?- failing_students_per_subject('Физика', Count).
+Count = 1.
+
+% top_student_per_group/2
+?- top_student_per_group(101, TopStudents).
+TopStudents = [1].
+
+?- top_student_per_group(104, TopStudents).
+TopStudents = [4].
