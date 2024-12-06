@@ -9,6 +9,8 @@ initial_state(LeftStack, [], [], []).
 % BFS implementation
 bfs([State|_], _, Solution) :-
     goal(State),
+    state_right(State, RightStack),
+    write('Final Right Stack: '), write(RightStack), nl,
     state_moves(State, Solution).
 
 bfs([CurrentState|Rest], Visited, Solution) :-
@@ -31,27 +33,27 @@ alternating([X, Y|Rest]) :-
     alternating([Y|Rest]).
 
 % Define successor states based on allowed moves
-successor(state(Left, Middle, Right, Moves), state(NewLeft, NewMiddle, NewRight, NewMoves)) :-
-    move(state(Left, Middle, Right, Moves), state(NewLeft, NewMiddle, NewRight, NewMoves)).
+successor(State, Successor) :-
+    move(State, Successor),
+    state_left(State, Left),
+    state_middle(State, Middle),
+    state_right(State, Right),
+    write('Move: '), write(NewMoves), nl,
+    write('Left: '), write(NewLeft), nl,
+    write('Middle: '), write(NewMiddle), nl,
+    write('Right: '), write(NewRight), nl, nl.
 
 % Define possible moves
-move(state([Elem|LeftRest], Middle, Right, Moves), state(LeftRest, Middle, [Elem|Right], NewMoves)) :-
-    append(Moves, [move(left, right)], NewMoves).
+move(state([Elem|LeftRest], Middle, Right, Moves), state(LeftRest, Middle, [Elem|Right], [move(left, right)|Moves])).
 
-move(state([Elem|LeftRest], Middle, Right, Moves), state(LeftRest, [Elem|Middle], Right, NewMoves)) :-
-    append(Moves, [move(left, middle)], NewMoves).
+move(state([Elem|LeftRest], Middle, Right, Moves), state(LeftRest, [Elem|Middle], Right, [move(left, middle)|Moves])).
 
-move(state(Left, [Elem|MiddleRest], Right, Moves), state(Left, MiddleRest, [Elem|Right], NewMoves)) :-
-    append(Moves, [move(middle, right)], NewMoves).
+move(state(Left, [Elem|MiddleRest], Right, Moves), state(Left, MiddleRest, [Elem|Right], [move(middle, right)|Moves])).
 
-move(state(Left, Middle, [Elem|RightRest], Moves), state(Left, Middle, RightRest, NewMoves)) :-
-    append(Moves, [move(right, left)], NewMoves).
+move(state(Left, Middle, [Elem|RightRest], Moves), state([Elem|Left], Middle, RightRest, [move(right, left)|Moves])).
 
 % Helper predicates to access state components
 state_left(state(Left, _, _, _), Left).
 state_middle(state(_, Middle, _, _), Middle).
 state_right(state(_, _, Right, _), Right).
 state_moves(state(_, _, _, Moves), Moves).
-
-% Example usage:
-% solve([w, b, b, w], Solution).
